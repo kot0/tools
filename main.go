@@ -63,6 +63,34 @@ func Frombase64(data string) string {
 	return string(result)
 }
 
+func Urlencode(s string) (result string){
+	for _, c := range s {
+		if c <= 0x7f {
+			result += fmt.Sprintf("%%%X", c)
+		} else if c > 0x1fffff {
+			result += fmt.Sprintf("%%%X%%%X%%%X%%%X",
+				0xf0 + ((c & 0x1c0000) >> 18),
+				0x80 + ((c & 0x3f000) >> 12),
+				0x80 + ((c & 0xfc0) >> 6),
+				0x80 + (c & 0x3f),
+			)
+		} else if c > 0x7ff {
+			result += fmt.Sprintf("%%%X%%%X%%%X",
+				0xe0 + ((c & 0xf000) >> 12),
+				0x80 + ((c & 0xfc0) >> 6),
+				0x80 + (c & 0x3f),
+			)
+		} else {
+			result += fmt.Sprintf("%%%X%%%X",
+				0xc0 + ((c & 0x7c0) >> 6),
+				0x80 + (c & 0x3f),
+			)
+		}
+	}
+
+	return result
+}
+
 func UniqueSlice(slice []string) []string {
 	var keys = make(map[string]bool)
 	var list []string
