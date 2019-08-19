@@ -11,7 +11,7 @@ import "io/ioutil"
 import "fmt"
 import "encoding/json"
 
-const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36"
+const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36"
 
 func ToJson(input interface{}) string {
 	data, _ := json.Marshal(input)
@@ -22,8 +22,40 @@ func Parsejson(data string, path string) string {
 	return gjson.Get(data, path).String()
 }
 
+// Deprecated: use ParsevalueDynamicCompile() or ParsevalueStaticCompile()
 func Parsevalue(text string, reg string) string {
 	r := regexp.MustCompile(reg)
+
+	tmp := r.FindStringSubmatch(text)
+
+	if len(tmp) != 2 {
+		return ""
+	}
+
+	return tmp[1]
+}
+
+func ParsevalueDynamicCompile(text string, reg string) string {
+	r := regexp.MustCompile(reg)
+
+	tmp := r.FindStringSubmatch(text)
+
+	if len(tmp) != 2 {
+		return ""
+	}
+
+	return tmp[1]
+}
+
+var regexpCompileCache = make(map[string]*regexp.Regexp)
+func ParsevalueStaticCompile(text string, reg string) string {
+	var r *regexp.Regexp
+	if regexpCompileCache[reg] == nil {
+		r = regexp.MustCompile(reg)
+		regexpCompileCache[reg] = r
+	} else {
+		r = regexpCompileCache[reg]
+	}
 
 	tmp := r.FindStringSubmatch(text)
 
