@@ -179,3 +179,11 @@ func ZlibDeCompress(data []byte) ([]byte, error) {
 
 	return dedata, nil
 }
+
+func OnErrorLog(err error) bool {
+	if err != nil {
+		println("error is: " + err.Error())
+		return true
+	}
+	return false
+}
