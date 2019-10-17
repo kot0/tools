@@ -11,7 +11,7 @@ import "io/ioutil"
 import "fmt"
 import "encoding/json"
 
-const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36"
+const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
 
 func ToJson(input interface{}) string {
 	data, _ := json.Marshal(input)
@@ -186,4 +186,41 @@ func OnErrorLog(err error) bool {
 		return true
 	}
 	return false
+}
+
+func TryDeleteFile(file string) {
+	_ = os.Remove(file)
+	return
+}
+
+func TryDeleteFiles(files []string) {
+	for _, file := range files {
+		TryDeleteFile(file)
+	}
+}
+
+func GetFilesFromFolder(folder string) []string {
+	var files []string
+
+	tmpFiles, _ := ioutil.ReadDir(folder)
+
+	for _, f := range tmpFiles {
+		files = append(files, f.Name())
+	}
+
+	return files
+}
+
+func GetFileSize(path string) (int, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return 0, err
+	}
+
+	fi, err := file.Stat()
+	if err != nil {
+		return 0, err
+	}
+
+	return int(fi.Size()), nil
 }
