@@ -10,6 +10,7 @@ import "bytes"
 import "io/ioutil"
 import "fmt"
 import "encoding/json"
+import "encoding/hex"
 
 const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
 
@@ -79,6 +80,17 @@ func Readfiletoarray(path string) ([]string, error) {
 		lines = append(lines, scanner.Text())
 	}
 	return lines, scanner.Err()
+}
+
+func ClearArrray(array []string) []string {
+	var out []string
+
+	for _, e := range array {
+		if e != "" {
+			out = append(out, e)
+		}
+	}
+	return out
 }
 
 func Addlinetofile(path string, text string) {
@@ -223,4 +235,17 @@ func GetFileSize(path string) (int, error) {
 	}
 
 	return int(fi.Size()), nil
+}
+
+func FromHex(in string) string {
+	data, err := hex.DecodeString(in)
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
+func ToHex(in string) string {
+	data := hex.EncodeToString([]byte(in))
+	return data
 }
