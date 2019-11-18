@@ -249,3 +249,9 @@ func ToHex(in string) string {
 	data := hex.EncodeToString([]byte(in))
 	return data
 }
+
+func OnErrorPanic(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
