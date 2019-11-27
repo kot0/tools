@@ -11,6 +11,8 @@ import "io/ioutil"
 import "fmt"
 import "encoding/json"
 import "encoding/hex"
+import "crypto/md5"
+import "sync"
 
 const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
 
@@ -49,12 +51,18 @@ func ParsevalueDynamicCompile(text string, reg string) string {
 }
 
 var regexpCompileCache = make(map[string]*regexp.Regexp)
+var m sync.Mutex
 func ParsevalueStaticCompile(text string, reg string) string {
 	var r *regexp.Regexp
+	m.Lock()
 	if regexpCompileCache[reg] == nil {
+		m.Unlock()
 		r = regexp.MustCompile(reg)
+		m.Lock()
 		regexpCompileCache[reg] = r
+		m.Unlock()
 	} else {
+		m.Unlock()
 		r = regexpCompileCache[reg]
 	}
 
@@ -152,6 +160,12 @@ func UniqueSlice(slice []string) []string {
 		}
 	}
 	return list
+}
+
+func Md5(text string) string {
+	hasher := md5.New()
+	hasher.Write([]byte(text))
+	return hex.EncodeToString(hasher.Sum(nil))
 }
 
 func FileExist(path string) bool {
