@@ -12,9 +12,12 @@ import "fmt"
 import "encoding/json"
 import "encoding/hex"
 import "crypto/md5"
+import "crypto/sha1"
+import "crypto/sha256"
+import "crypto/sha512"
 import "sync"
 
-const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36"
 
 func ToJson(input interface{}) string {
 	data, _ := json.Marshal(input)
@@ -43,7 +46,7 @@ func ParsevalueDynamicCompile(text string, reg string) string {
 
 	tmp := r.FindStringSubmatch(text)
 
-	if len(tmp) != 2 {
+	if len(tmp) < 2 {
 		return ""
 	}
 
@@ -68,7 +71,7 @@ func ParsevalueStaticCompile(text string, reg string) string {
 
 	tmp := r.FindStringSubmatch(text)
 
-	if len(tmp) != 2 {
+	if len(tmp) < 2 {
 		return ""
 	}
 
@@ -160,12 +163,6 @@ func UniqueSlice(slice []string) []string {
 		}
 	}
 	return list
-}
-
-func Md5(text string) string {
-	hasher := md5.New()
-	hasher.Write([]byte(text))
-	return hex.EncodeToString(hasher.Sum(nil))
 }
 
 func FileExist(path string) bool {
@@ -268,4 +265,40 @@ func OnErrorPanic(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func Sha1(data string) string {
+	h := sha1.New()
+	h.Write([]byte(data))
+	hs := h.Sum(nil)
+	return hex.EncodeToString(hs)
+}
+
+func Sha256(data string) string {
+	h := sha256.New()
+	h.Write([]byte(data))
+	hs := h.Sum(nil)
+	return hex.EncodeToString(hs)
+}
+
+func Sha512(data string) string {
+	h := sha512.New()
+	h.Write([]byte(data))
+	hs := h.Sum(nil)
+	return hex.EncodeToString(hs)
+}
+
+func Md5(text string) string {
+	hasher := md5.New()
+	hasher.Write([]byte(text))
+	return hex.EncodeToString(hasher.Sum(nil))
+}
+
+func ArrayContains(array []string, data string) bool {
+	for _, e := range array {
+		if e == data {
+			return true
+		}
+	}
+	return false
 }
