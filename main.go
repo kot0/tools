@@ -16,6 +16,10 @@ import "crypto/sha1"
 import "crypto/sha256"
 import "crypto/sha512"
 import "sync"
+import "path/filepath"
+import "strings"
+import "log"
+import "io"
 
 const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36"
 
@@ -55,6 +59,7 @@ func ParsevalueDynamicCompile(text string, reg string) string {
 
 var regexpCompileCache = make(map[string]*regexp.Regexp)
 var m sync.Mutex
+
 func ParsevalueStaticCompile(text string, reg string) string {
 	var r *regexp.Regexp
 	m.Lock()
@@ -125,27 +130,27 @@ func Frombase64(data string) string {
 	return string(result)
 }
 
-func Urlencode(s string) (result string){
+func Urlencode(s string) (result string) {
 	for _, c := range s {
 		if c <= 0x7f {
 			result += fmt.Sprintf("%%%X", c)
 		} else if c > 0x1fffff {
 			result += fmt.Sprintf("%%%X%%%X%%%X%%%X",
-				0xf0 + ((c & 0x1c0000) >> 18),
-				0x80 + ((c & 0x3f000) >> 12),
-				0x80 + ((c & 0xfc0) >> 6),
-				0x80 + (c & 0x3f),
+				0xf0+((c&0x1c0000)>>18),
+				0x80+((c&0x3f000)>>12),
+				0x80+((c&0xfc0)>>6),
+				0x80+(c&0x3f),
 			)
 		} else if c > 0x7ff {
 			result += fmt.Sprintf("%%%X%%%X%%%X",
-				0xe0 + ((c & 0xf000) >> 12),
-				0x80 + ((c & 0xfc0) >> 6),
-				0x80 + (c & 0x3f),
+				0xe0+((c&0xf000)>>12),
+				0x80+((c&0xfc0)>>6),
+				0x80+(c&0x3f),
 			)
 		} else {
 			result += fmt.Sprintf("%%%X%%%X",
-				0xc0 + ((c & 0x7c0) >> 6),
-				0x80 + (c & 0x3f),
+				0xc0+((c&0x7c0)>>6),
+				0x80+(c&0x3f),
 			)
 		}
 	}
@@ -291,7 +296,40 @@ func Sha512(data string) string {
 func Md5(text string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(text))
-	return hex.EncodeToString(hasher.Sum(nil))
+	hash := hex.EncodeToString(hasher.Sum(nil))
+	hasher.Reset()
+	return hash
+}
+
+func Md5File(filePath string) (string, error) {
+	//Initialize variable returnMD5String now in case an error has to be returned
+	var returnMD5String string
+
+	//Open the passed argument and check for any error
+	file, err := os.Open(filePath)
+	if err != nil {
+		return returnMD5String, err
+	}
+
+	//Tell the program to call the following function when the current function returns
+	defer file.Close()
+
+	//Open a new hash interface to write to
+	hash := md5.New()
+
+	//Copy the file in the hash interface and check for any error
+	if _, err := io.Copy(hash, file); err != nil {
+		return returnMD5String, err
+	}
+
+	//Get the 16 bytes hash
+	hashInBytes := hash.Sum(nil)[:16]
+
+	//Convert the bytes to a string
+	returnMD5String = hex.EncodeToString(hashInBytes)
+
+	return returnMD5String, nil
+
 }
 
 func ArrayContains(array []string, data string) bool {
@@ -301,4 +339,76 @@ func ArrayContains(array []string, data string) bool {
 		}
 	}
 	return false
+}
+
+func ScanFolderRecursive(dir_path string, ignore []string) ([]string, []string) {
+	folders := []string{}
+	files := []string{}
+
+	// Scan
+	filepath.Walk(dir_path, func(path string, f os.FileInfo, err error) error {
+
+		_continue := false
+
+		// Loop : Ignore Files & Folders
+		for _, i := range ignore {
+
+			// If ignored path
+			if strings.Index(path, i) != -1 {
+
+				// Continue
+				_continue = true
+			}
+		}
+
+		if _continue == false {
+
+			f, err = os.Stat(path)
+
+			// If no error
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			// File & Folder Mode
+			f_mode := f.Mode()
+
+			// Is folder
+			if f_mode.IsDir() {
+
+				// Append to Folders Array
+				folders = append(folders, path)
+
+				// Is file
+			} else if f_mode.IsRegular() {
+
+				// Append to Files Array
+				files = append(files, path)
+			}
+		}
+
+		return nil
+	})
+
+	return folders, files
+}
+
+func CopyFile(src, dst string) error {
+	in, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer in.Close()
+
+	out, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, in)
+	if err != nil {
+		return err
+	}
+	return out.Close()
 }
