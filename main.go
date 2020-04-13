@@ -301,6 +301,14 @@ func Md5(text string) string {
 	return hash
 }
 
+func Md5Bytes(data []byte) string {
+	hasher := md5.New()
+	hasher.Write([]byte(data))
+	hash := hex.EncodeToString(hasher.Sum(nil))
+	hasher.Reset()
+	return hash
+}
+
 func Md5File(filePath string) (string, error) {
 	//Initialize variable returnMD5String now in case an error has to be returned
 	var returnMD5String string
