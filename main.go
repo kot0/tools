@@ -272,6 +272,13 @@ func OnErrorPanic(err error) {
 	}
 }
 
+func CheckError(err error) bool {
+	if err != nil {
+		return true
+	}
+	return false
+}
+
 func Sha1(data string) string {
 	h := sha1.New()
 	h.Write([]byte(data))
