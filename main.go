@@ -21,7 +21,7 @@ import "strings"
 import "log"
 import "io"
 
-const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36"
+const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 Safari/537.36"
 
 func ToJson(input interface{}) string {
 	data, _ := json.Marshal(input)
@@ -303,9 +303,7 @@ func Sha512(data string) string {
 func Md5(text string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(text))
-	hash := hex.EncodeToString(hasher.Sum(nil))
-	hasher.Reset()
-	return hash
+	return hex.EncodeToString(hasher.Sum(nil))
 }
 
 func Md5Bytes(data []byte) string {
@@ -426,4 +424,30 @@ func CopyFile(src, dst string) error {
 		return err
 	}
 	return out.Close()
+}
+
+func RemoveNewlineChars(text string) string {
+	text = strings.ReplaceAll(text, "\n", "")
+	text = strings.ReplaceAll(text, "\r", "")
+	return text
+}
+
+var sqliteEscapeMap = map[string]string{`\\`: `\\\\`, `'`: `''`, `\\0`: `\\\\0`, `\n`: `\\n`, `\r`: `\\r`, `\x1a`: `\\Z`}
+
+func SqliteEscape(text string) string {
+	for b, a := range sqliteEscapeMap {
+		text = strings.ReplaceAll(text, b, a)
+	}
+
+	return text
+}
+
+var tgEscapeArray = []string{"_", "*", "[", "]", "(", ")", "~", "`", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!"}
+
+func TgEscape(text string) string {
+	for _, char := range tgEscapeArray {
+		text = strings.Replace(text, char, `\`+char, -1)
+	}
+
+	return text
 }
