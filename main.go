@@ -21,7 +21,7 @@ import "strings"
 import "log"
 import "io"
 
-const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 Safari/537.36"
+const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36"
 
 func ToJson(input interface{}) string {
 	data, _ := json.Marshal(input)
@@ -110,7 +110,7 @@ func ClearArrray(array []string) []string {
 }
 
 func Addlinetofile(path string, text string) {
-	f, _ := os.OpenFile(path, os.O_APPEND|os.O_WRONLY|os.O_CREATE, os.ModeAppend)
+	f, _ := os.OpenFile(path, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	f.WriteString(text)
 	f.Close()
 }
