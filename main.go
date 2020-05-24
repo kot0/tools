@@ -21,9 +21,11 @@ import (
 	"regexp"
 	"strings"
 	"sync"
+	"time"
 )
 
 const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36"
+const timeFormat = `2006-01-02 15:04:05`
 
 func ToJson(input interface{}) string {
 	data, _ := json.Marshal(input)
@@ -356,12 +358,12 @@ func ArrayContains(array []string, data string) bool {
 	return false
 }
 
-func ScanFolderRecursive(dir_path string, ignore []string) ([]string, []string) {
-	folders := []string{}
-	files := []string{}
+func ScanFolderRecursive(dirPath string, ignore []string) ([]string, []string) {
+	var folders []string
+	var files []string
 
 	// Scan
-	filepath.Walk(dir_path, func(path string, f os.FileInfo, err error) error {
+	filepath.Walk(dirPath, func(path string, f os.FileInfo, err error) error {
 
 		_continue := false
 
@@ -452,4 +454,26 @@ func TgEscape(text string) string {
 	}
 
 	return text
+}
+
+type LoggerStruct struct {
+	loggerFile string
+	loggerName string
+}
+
+func NewLogger(loggerFile string, loggerName string) LoggerStruct {
+	return LoggerStruct{
+		loggerFile: loggerFile,
+		loggerName: loggerName,
+	}
+}
+
+func (logger LoggerStruct) Log(text ...interface{}) {
+	out := logger.loggerName + ": " + time.Now().Format(timeFormat) + fmt.Sprint(text...)
+
+	fmt.Println(out)
+
+	if logger.loggerFile != "" {
+		Addlinetofile(logger.loggerFile, out+"\n")
+	}
 }
