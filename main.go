@@ -126,7 +126,7 @@ func Readfromconsole() string {
 }
 
 func Tobase64(data string) string {
-	return string(base64.StdEncoding.EncodeToString([]byte(data)))
+	return base64.StdEncoding.EncodeToString([]byte(data))
 }
 
 func Frombase64(data string) string {
@@ -312,7 +312,7 @@ func Md5(text string) string {
 
 func Md5Bytes(data []byte) string {
 	hasher := md5.New()
-	hasher.Write([]byte(data))
+	hasher.Write(data)
 	hash := hex.EncodeToString(hasher.Sum(nil))
 	hasher.Reset()
 	return hash
@@ -388,16 +388,16 @@ func ScanFolderRecursive(dirPath string, ignore []string) ([]string, []string) {
 			}
 
 			// File & Folder Mode
-			f_mode := f.Mode()
+			fMode := f.Mode()
 
 			// Is folder
-			if f_mode.IsDir() {
+			if fMode.IsDir() {
 
 				// Append to Folders Array
 				folders = append(folders, path)
 
 				// Is file
-			} else if f_mode.IsRegular() {
+			} else if fMode.IsRegular() {
 
 				// Append to Files Array
 				files = append(files, path)
