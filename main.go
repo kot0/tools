@@ -469,7 +469,7 @@ func NewLogger(loggerFile string, loggerName string) LoggerStruct {
 }
 
 func (logger LoggerStruct) Log(text ...interface{}) {
-	out := logger.loggerName + ": " + time.Now().Format(timeFormat) + fmt.Sprint(text...)
+	out := logger.loggerName + ": " + time.Now().Format(TimeFormat) + fmt.Sprint(text...)
 
 	fmt.Println(out)
 
