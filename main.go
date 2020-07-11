@@ -470,6 +470,8 @@ func NewLogger(loggerFile string, loggerName string) LoggerStruct {
 
 func (logger LoggerStruct) Log(text ...interface{}) {
 	out := "[" + logger.loggerName + "]" + ": " + time.Now().Format(TimeFormat) + ": " + fmt.Sprintln(text...)
+	out = strings.TrimSuffix(out, "\n")
+
 	fmt.Println(out)
 
 	if logger.loggerFile != "" {
