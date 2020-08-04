@@ -478,3 +478,7 @@ func (logger LoggerStruct) Log(text ...interface{}) {
 		Addlinetofile(logger.loggerFile, out+"\n")
 	}
 }
+
+func FormatText(text ...interface{}) string {
+	return strings.TrimSuffix(fmt.Sprintln(text...), "\n")
+}
