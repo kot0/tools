@@ -129,6 +129,10 @@ func Tobase64(data string) string {
 	return base64.StdEncoding.EncodeToString([]byte(data))
 }
 
+func BytesTobase64(data []byte) string {
+	return base64.StdEncoding.EncodeToString(data)
+}
+
 func Frombase64(data string) string {
 	result, _ := base64.StdEncoding.DecodeString(data)
 	return string(result)
@@ -267,6 +271,11 @@ func FromHex(in string) string {
 
 func ToHex(in string) string {
 	data := hex.EncodeToString([]byte(in))
+	return data
+}
+
+func BytesToHex(in []byte) string {
+	data := hex.EncodeToString(in)
 	return data
 }
 
@@ -481,4 +490,18 @@ func (logger LoggerStruct) Log(text ...interface{}) {
 
 func FormatText(text ...interface{}) string {
 	return strings.TrimSuffix(fmt.Sprintln(text...), "\n")
+}
+
+func ClearSlice(slice []string) []string {
+	var outSlice []string
+	for _, entry := range slice {
+		entry = RemoveNewlineChars(entry)
+
+		if entry == "" {
+			continue
+		}
+
+		outSlice = append(outSlice, entry)
+	}
+	return outSlice
 }
