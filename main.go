@@ -506,7 +506,7 @@ func ClearSlice(slice []string) []string {
 	return outSlice
 }
 
-func addPrefixToSlice(slice []string, prefix string) []string {
+func AddPrefixToSlice(slice []string, prefix string) []string {
 	var outSlice []string
 	for _, element := range slice {
 		outSlice = append(outSlice, prefix+element)
