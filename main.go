@@ -133,6 +133,11 @@ func BytesTobase64(data []byte) string {
 	return base64.StdEncoding.EncodeToString(data)
 }
 
+func Base64ToBytes(data string) []byte {
+	result, _ := base64.StdEncoding.DecodeString(data)
+	return result
+}
+
 func Frombase64(data string) string {
 	result, _ := base64.StdEncoding.DecodeString(data)
 	return string(result)
