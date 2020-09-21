@@ -460,6 +460,16 @@ func SqliteEscape(text string) string {
 	return text
 }
 
+var mySqlEscapeMap = map[string]string{"\\": "\\\\", "'": `\'`, "\\0": "\\\\0", "\n": "\\n", "\r": "\\r", `"`: `\"`, "\x1a": "\\Z"}
+
+func MySqlEscape(value string) string {
+	for b, a := range mySqlEscapeMap {
+		value = strings.Replace(value, b, a, -1)
+	}
+
+	return value
+}
+
 var tgEscapeArray = []string{"_", "*", "[", "]", "(", ")", "~", "`", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!"}
 
 func TgEscape(text string) string {
