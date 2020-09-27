@@ -87,6 +87,29 @@ func ParsevalueStaticCompile(text string, reg string) string {
 	return tmp[1]
 }
 
+func ParsevaluesStaticCompile(text string, reg string) []string {
+	var r *regexp.Regexp
+	m.Lock()
+	if regexpCompileCache[reg] == nil {
+		m.Unlock()
+		r = regexp.MustCompile(reg)
+		m.Lock()
+		regexpCompileCache[reg] = r
+		m.Unlock()
+	} else {
+		m.Unlock()
+		r = regexpCompileCache[reg]
+	}
+
+	tmp := r.FindStringSubmatch(text)
+
+	if len(tmp) < 2 {
+		return nil
+	}
+
+	return tmp
+}
+
 func Readfiletoarray(path string) ([]string, error) {
 	file, err := os.Open(path)
 	if err != nil {
