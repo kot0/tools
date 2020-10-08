@@ -307,6 +307,14 @@ func BytesToHex(in []byte) string {
 	return data
 }
 
+func HexToBytes(in string) []byte {
+	data, err := hex.DecodeString(in)
+	if err != nil {
+		return nil
+	}
+	return data
+}
+
 func OnErrorPanic(err error) {
 	if err != nil {
 		panic(err)
