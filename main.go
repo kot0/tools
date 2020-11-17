@@ -549,3 +549,15 @@ func AddPrefixToSlice(slice []string, prefix string) []string {
 	}
 	return outSlice
 }
+
+func ReverseArray(array []string) []string {
+	lenx := len(array)
+	result := make([]string, lenx)
+
+	for i := 0; i < lenx; i++ {
+		j := lenx - (i + 1)
+		result[i] = array[j]
+	}
+
+	return result
+}
