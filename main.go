@@ -26,7 +26,9 @@ import (
 
 const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36"
 const TimeFormat = `2006-01-02 15:04:05`
+
 const TimeFormatOnlyTime = `15:04:05`
+const TimeFormatOnlyDate = `2006-01-02`
 
 func ToJson(input interface{}) string {
 	data, _ := json.Marshal(input)
