@@ -104,13 +104,19 @@ func ParsevaluesStaticCompile(text string, reg string) []string {
 		r = regexpCompileCache[reg]
 	}
 
-	tmp := r.FindStringSubmatch(text)
+	tmp := r.FindAllStringSubmatch(text, -1)
 
-	if len(tmp) < 2 {
-		return nil
+	var result []string
+
+	for _, v := range tmp {
+		if len(v) < 2 {
+			continue
+		}
+
+		result = append(result, v[1])
 	}
 
-	return tmp
+	return result
 }
 
 func Readfiletoarray(path string) ([]string, error) {
