@@ -412,6 +412,24 @@ func ArrayContains(array []string, data string) bool {
 	return false
 }
 
+func StringArrayContains(array []string, data string) bool {
+	for _, e := range array {
+		if e == data {
+			return true
+		}
+	}
+	return false
+}
+
+func IntArrayContains(array []int, data int) bool {
+	for _, e := range array {
+		if e == data {
+			return true
+		}
+	}
+	return false
+}
+
 func ScanFolderRecursive(dirPath string, ignore []string) ([]string, []string) {
 	var folders []string
 	var files []string
