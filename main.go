@@ -12,7 +12,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/tidwall/gjson"
 	"io"
 	"io/ioutil"
 	"log"
@@ -33,23 +32,6 @@ const TimeFormatOnlyDate = `2006-01-02`
 func ToJson(input interface{}) string {
 	data, _ := json.Marshal(input)
 	return string(data)
-}
-
-func Parsejson(data string, path string) string {
-	return gjson.Get(data, path).String()
-}
-
-// Deprecated: use ParsevalueDynamicCompile() or ParsevalueStaticCompile()
-func Parsevalue(text string, reg string) string {
-	r := regexp.MustCompile(reg)
-
-	tmp := r.FindStringSubmatch(text)
-
-	if len(tmp) != 2 {
-		return ""
-	}
-
-	return tmp[1]
 }
 
 func ParsevalueDynamicCompile(text string, reg string) string {
