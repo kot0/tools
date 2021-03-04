@@ -6,7 +6,7 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha512"
-	"encoding/hex"
+	"github.com/kot0/tools"
 	"io"
 )
 
@@ -28,11 +28,11 @@ func Encrypt(text string, passphrase string) string {
 	encrypted := make([]byte, len(pad))
 	ecb.CryptBlocks(encrypted, pad)
 
-	return toHex("s0a00l0t" + string(salt) + string(encrypted))
+	return tools.ToHex("s0a00l0t" + string(salt) + string(encrypted))
 }
 
 func Decrypt(encrypted string, passphrase string) string {
-	ct := fromHex(encrypted)
+	ct := tools.HexToBytes(encrypted)
 	if len(ct) < 16 || string(ct[:8]) != "s0a00l0t" {
 		return ""
 	}
@@ -80,17 +80,4 @@ func __DeriveKeyAndIv(passphrase string, salt string) (string, string) {
 	iv := salted[32:48]
 
 	return key, iv
-}
-
-func toHex(in string) string {
-	data := hex.EncodeToString([]byte(in))
-	return data
-}
-
-func fromHex(in string) []byte {
-	data, err := hex.DecodeString(in)
-	if err != nil {
-		return nil
-	}
-	return data
 }
