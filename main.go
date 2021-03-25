@@ -43,6 +43,8 @@ func ParsevalueDynamicCompile(text string, reg string) string {
 		return ""
 	}
 
+	tmp[1] = (" " + tmp[1])[1:] //memory leak fix
+
 	return tmp[1]
 }
 
@@ -69,6 +71,8 @@ func ParsevalueStaticCompile(text string, reg string) string {
 		return ""
 	}
 
+	tmp[1] = (" " + tmp[1])[1:] //memory leak fix
+
 	return tmp[1]
 }
 
@@ -94,6 +98,8 @@ func ParsevaluesStaticCompile(text string, reg string) []string {
 		if len(v) < 2 {
 			continue
 		}
+
+		v[1] = (" " + v[1])[1:] //memory leak fix
 
 		result = append(result, v[1])
 	}
