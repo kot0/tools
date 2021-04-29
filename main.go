@@ -547,7 +547,7 @@ func (logger Logger) Log(text ...interface{}) {
 		out = time.Now().Format(TimeFormat) + out
 	}
 
-	callFile, callLineNumber := getCallLocation(3)
+	callFile, callLineNumber := getCallLocation(2)
 
 	if logger.ShowSourceCodePath {
 		out += callFile
