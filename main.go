@@ -537,40 +537,48 @@ func NewLogger(loggerFile string, loggerName string) Logger {
 }
 
 func (logger Logger) Log(text ...interface{}) {
-	out := ""
+	var out []string
 
 	if logger.Name != "" {
-		out = "[" + logger.Name + "] " + out
+		out = append(out, "["+logger.Name+"] ")
 	}
 
 	if logger.ShowTime {
-		out = time.Now().Format(TimeFormat) + " " + out
+		out = append(out, time.Now().Format(TimeFormat))
 	}
 
 	callFile, callLineNumber := getCallLocation(2)
 
-	if logger.ShowSourceCodePath {
-		out += callFile
-	}
+	if logger.ShowSourceCodePath || logger.ShowSourceCodeLine {
+		tmp := ""
 
-	if logger.ShowSourceCodeLine {
 		if logger.ShowSourceCodePath {
-			out += ":"
+			tmp += callFile
 		}
 
-		out += cast.ToString(callLineNumber)
+		if logger.ShowSourceCodeLine {
+			if logger.ShowSourceCodePath {
+				tmp += ":"
+			}
+
+			tmp += cast.ToString(callLineNumber)
+		}
+
+		out = append(out, tmp)
 	}
+
+	finalLogText := strings.Join(out, " ")
 
 	if logger.ShowTime || logger.Name != "" || logger.ShowSourceCodeLine || logger.ShowSourceCodePath {
-		out += ": "
+		finalLogText += ": "
 	}
 
-	out += strings.TrimSuffix(fmt.Sprintln(text...), "\n")
+	finalLogText += strings.TrimSuffix(fmt.Sprintln(text...), "\n")
 
-	fmt.Println(out)
+	fmt.Println(finalLogText)
 
 	if logger.File != "" {
-		Addlinetofile(logger.File, out+"\n")
+		Addlinetofile(logger.File, finalLogText+"\n")
 	}
 }
 
