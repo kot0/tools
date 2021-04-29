@@ -537,7 +537,7 @@ func NewLogger(loggerFile string, loggerName string) LoggerStruct {
 }
 
 func (logger LoggerStruct) Log(text ...interface{}) {
-	out := "strings.TrimSuffix(fmt.Sprintln(text...), \"\\n\")"
+	out := ""
 
 	if logger.Name != "" {
 		out = "[" + logger.Name + "] " + out
