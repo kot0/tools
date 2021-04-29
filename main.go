@@ -518,7 +518,7 @@ func TgEscape(text string) string {
 	return text
 }
 
-type LoggerStruct struct {
+type Logger struct {
 	File string
 	Name string
 
@@ -527,16 +527,16 @@ type LoggerStruct struct {
 	ShowSourceCodePath bool
 }
 
-// Deprecated: use LoggerStruct directly
-func NewLogger(loggerFile string, loggerName string) LoggerStruct {
-	return LoggerStruct{
+// Deprecated: use Logger directly
+func NewLogger(loggerFile string, loggerName string) Logger {
+	return Logger{
 		File:     loggerFile,
 		Name:     loggerName,
 		ShowTime: true,
 	}
 }
 
-func (logger LoggerStruct) Log(text ...interface{}) {
+func (logger Logger) Log(text ...interface{}) {
 	out := ""
 
 	if logger.Name != "" {
