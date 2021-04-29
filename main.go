@@ -12,12 +12,14 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/spf13/cast"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -517,26 +519,64 @@ func TgEscape(text string) string {
 }
 
 type LoggerStruct struct {
-	loggerFile string
-	loggerName string
+	File string
+	Name string
+
+	ShowTime           bool
+	ShowSourceCodeLine bool
+	ShowSourceCodePath bool
 }
 
+// NewLogger Deprecated
 func NewLogger(loggerFile string, loggerName string) LoggerStruct {
 	return LoggerStruct{
-		loggerFile: loggerFile,
-		loggerName: loggerName,
+		File:     loggerFile,
+		Name:     loggerName,
+		ShowTime: true,
 	}
 }
 
 func (logger LoggerStruct) Log(text ...interface{}) {
-	out := "[" + logger.loggerName + "] " + time.Now().Format(TimeFormat) + ": " + fmt.Sprintln(text...)
-	out = strings.TrimSuffix(out, "\n")
+	out := "strings.TrimSuffix(fmt.Sprintln(text...), \"\\n\")"
+
+	if logger.Name != "" {
+		out = "[" + logger.Name + "] " + out
+	}
+
+	if logger.ShowTime {
+		out = time.Now().Format(TimeFormat) + out
+	}
+
+	callFile, callLineNumber := getCallLocation(3)
+
+	if logger.ShowSourceCodePath {
+		out += callFile
+	}
+
+	if logger.ShowSourceCodeLine {
+		if logger.ShowSourceCodePath {
+			out += ":"
+		}
+
+		out += cast.ToString(callLineNumber)
+	}
+
+	if logger.ShowTime || logger.Name != "" || logger.ShowSourceCodeLine || logger.ShowSourceCodePath {
+		out += ": "
+	}
+
+	out += strings.TrimSuffix(fmt.Sprintln(text...), "\n")
 
 	fmt.Println(out)
 
-	if logger.loggerFile != "" {
-		Addlinetofile(logger.loggerFile, out+"\n")
+	if logger.File != "" {
+		Addlinetofile(logger.File, out+"\n")
 	}
+}
+
+func getCallLocation(skipCalls int) (string, int) {
+	_, callFile, callLineNumber, _ := runtime.Caller(skipCalls)
+	return callFile, callLineNumber
 }
 
 func FormatText(text ...interface{}) string {
