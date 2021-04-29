@@ -527,7 +527,7 @@ type LoggerStruct struct {
 	ShowSourceCodePath bool
 }
 
-// NewLogger Deprecated
+// NewLogger Deprecated: use LoggerStruct directly
 func NewLogger(loggerFile string, loggerName string) LoggerStruct {
 	return LoggerStruct{
 		File:     loggerFile,
