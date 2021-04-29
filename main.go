@@ -540,7 +540,7 @@ func (logger Logger) Log(text ...interface{}) {
 	var out []string
 
 	if logger.Name != "" {
-		out = append(out, "["+logger.Name+"] ")
+		out = append(out, "["+logger.Name+"]")
 	}
 
 	if logger.ShowTime {
