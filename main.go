@@ -25,7 +25,7 @@ import (
 	"time"
 )
 
-const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
+const UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36"
 const TimeFormat = `2006-01-02 15:04:05`
 
 const TimeFormatOnlyTime = `15:04:05`
